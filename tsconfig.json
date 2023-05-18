@@ -1,0 +1,13 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+      "target": "ES6",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "removeComments": true,
+      "resolveJsonModule": true,
+      "esModuleInterop": true,
+      "allowJs": true
+    },
+    "include": ["src"]
+  }

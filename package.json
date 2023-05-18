@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "sls offline",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "build": "npx tsc",
+    "lint": "npx eslint --max-warnings=0 ./src",
+    "pretty:write": "npx prettier --write './src/**/*.ts'",
+    "pretty:check": "npx prettier --check './src/**/*.ts'"
   },
   "repository": {
     "type": "git",
