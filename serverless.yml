@@ -1,0 +1,30 @@
+service: flow-api
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ${opt:region, 'eu-west-2'}
+  stage: ${opt:stage, 'dev'}
+  environment:
+    ENVIRONMENT: ${self:provider.stage}
+    NODE_ENV: ${self:custom.nodeEnv.${self:provider.stage}}
+
+custom:
+  serverless-offline:
+    host: 0.0.0.0
+    httpPort: 3000
+  nodeEnv:
+    dev: development
+    prod: production
+
+functions:
+  helloWorld:
+    handler: src/functions/index.helloWorld
+    events:
+      - http:
+          path: /api/hello-world
+          method: get
