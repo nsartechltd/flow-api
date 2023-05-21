@@ -1,6 +1,7 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
+      "outDir": ".build",
       "target": "ES6",
       "module": "commonjs",
       "moduleResolution": "node",
