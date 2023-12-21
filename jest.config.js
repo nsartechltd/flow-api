@@ -1,6 +1,5 @@
 module.exports = {
   testEnvironment: 'node',
-  roots: ['<rootDir>/tests'],
   coverageDirectory: './coverage',
   reporters: [
     'default',
@@ -14,7 +13,7 @@ module.exports = {
   ],
   transformIgnorePatterns: ['^.+\\.js$'],
   coverageReporters: ['text', 'lcov', 'text-summary'],
-  testMatch: ['**/*.test.ts'],
+  testMatch: ['**/*.spec.ts'],
   moduleDirectories: ['node_modules', 'src'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   transform: {

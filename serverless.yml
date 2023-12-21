@@ -12,6 +12,8 @@ provider:
   environment:
     ENVIRONMENT: ${self:provider.stage}
     NODE_ENV: ${self:custom.nodeEnv.${self:provider.stage}}
+    # DATABASE_URL: ${ssm:/flow/COGNITO_USER_POOL_NAME}
+    DATABASE_URL: postgresql://postgres@localhost:5432/flow
 
 custom:
   serverless-offline:
@@ -26,6 +28,7 @@ functions:
     handler: src/functions/user.storeHandler
     events:
       - cognitoUserPool:
-          pool: ${ssm:/flow/COGNITO_USER_POOL_NAME}
+          # pool: ${ssm:/flow/COGNITO_USER_POOL_NAME}
+          pool: flow-dev-user-pool
           trigger: PostConfirmation
           existing: true
