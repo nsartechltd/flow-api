@@ -6,12 +6,14 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs18.x
-  region: ${opt:region, 'eu-west-2'}
+  runtime: nodejs20.x
+  region: eu-west-2
   stage: ${opt:stage, 'dev'}
   environment:
     ENVIRONMENT: ${self:provider.stage}
     NODE_ENV: ${self:custom.nodeEnv.${self:provider.stage}}
+    # DATABASE_URL: ${ssm:/flow/COGNITO_USER_POOL_NAME} - TODO: Uncomment when FLOW-7 is in place
+    DATABASE_URL: postgresql://postgres@localhost:5432/flow
 
 custom:
   serverless-offline:
@@ -22,9 +24,10 @@ custom:
     prod: production
 
 functions:
-  helloWorld:
-    handler: src/functions/index.helloWorld
+  storeUser:
+    handler: src/functions/user.storeHandler
     events:
-      - http:
-          path: /api/hello-world
-          method: get
+      - cognitoUserPool:
+          pool: ${ssm:/flow/COGNITO_USER_POOL_NAME}
+          trigger: PostConfirmation
+          existing: true

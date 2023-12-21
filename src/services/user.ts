@@ -1,0 +1,35 @@
+import { PostConfirmationTriggerEvent } from 'aws-lambda';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+export const storeUser = async (event: PostConfirmationTriggerEvent) => {
+  console.log('Event received: ', event);
+
+  const { userAttributes: attributes } = event.request;
+
+  const organisation = await prisma.organisation.findFirst({
+    where: {
+      name: attributes.organisation,
+    },
+  });
+
+  if (!organisation) {
+    throw new Error(
+      `Organisation with name: '${attributes.organisation}' could not be found. User was not added to the database.`
+    );
+  }
+
+  await prisma.user.create({
+    data: {
+      organisationId: organisation.id,
+      firstName: attributes.given_name,
+      lastName: attributes.family_name,
+      email: attributes.email,
+      birthdate: attributes.birthdate,
+      cognitoId: attributes.sub,
+    },
+  });
+
+  return event;
+};
