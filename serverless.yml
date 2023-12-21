@@ -12,7 +12,7 @@ provider:
   environment:
     ENVIRONMENT: ${self:provider.stage}
     NODE_ENV: ${self:custom.nodeEnv.${self:provider.stage}}
-    # DATABASE_URL: ${ssm:/flow/COGNITO_USER_POOL_NAME}
+    # DATABASE_URL: ${ssm:/flow/COGNITO_USER_POOL_NAME} - TODO: Uncomment when FLOW-7 is in place
     DATABASE_URL: postgresql://postgres@localhost:5432/flow
 
 custom:
@@ -28,7 +28,6 @@ functions:
     handler: src/functions/user.storeHandler
     events:
       - cognitoUserPool:
-          # pool: ${ssm:/flow/COGNITO_USER_POOL_NAME}
-          pool: flow-dev-user-pool
+          pool: ${ssm:/flow/COGNITO_USER_POOL_NAME}
           trigger: PostConfirmation
           existing: true
