@@ -9,6 +9,10 @@ provider:
   runtime: nodejs20.x
   region: eu-west-2
   stage: ${opt:stage, 'dev'}
+  vpc:
+    securityGroupIds:
+      - ${ssm:/flow/SECURITY_GROUP_ID}
+    subnetIds: ${ssm:/flow/PRIVATE_SUBNET_IDS}
   environment:
     ENVIRONMENT: ${self:provider.stage}
     NODE_ENV: ${self:custom.nodeEnv.${self:provider.stage}}
