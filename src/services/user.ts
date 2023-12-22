@@ -10,13 +10,13 @@ export const storeUser = async (event: PostConfirmationTriggerEvent) => {
 
   const organisation = await prisma.organisation.findFirst({
     where: {
-      name: attributes.organisation,
+      name: attributes['custom:organisation'],
     },
   });
 
   if (!organisation) {
     throw new Error(
-      `Organisation with name: '${attributes.organisation}' could not be found. User was not added to the database.`
+      `Organisation with name: '${attributes['custom:organisation']}' could not be found. User was not added to the database.`
     );
   }
 
