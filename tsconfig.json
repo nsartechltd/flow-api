@@ -1,14 +1,16 @@
 {
-    "compileOnSave": true,
-    "compilerOptions": {
-      "outDir": ".build",
-      "target": "ES6",
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "removeComments": true,
-      "resolveJsonModule": true,
-      "esModuleInterop": true,
-      "allowJs": true
-    },
-    "include": ["src"]
-  }
+  "compileOnSave": true,
+  "compilerOptions": {
+    "outDir": ".build",
+    "target": "ES6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowJs": true
+  },
+  "include": [
+    "src"
+  ]
+}
