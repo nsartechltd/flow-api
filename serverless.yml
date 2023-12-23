@@ -16,8 +16,7 @@ provider:
   environment:
     ENVIRONMENT: ${self:provider.stage}
     NODE_ENV: ${self:custom.nodeEnv.${self:provider.stage}}
-    # DATABASE_URL: ${ssm:/flow/COGNITO_USER_POOL_NAME} - TODO: Uncomment when FLOW-7 is in place
-    DATABASE_URL: postgresql://postgres@localhost:5432/flow
+    DATABASE_URL: ${ssm:/flow/rds/DB_URL}
 
 custom:
   serverless-offline:
