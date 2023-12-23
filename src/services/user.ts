@@ -15,9 +15,11 @@ export const storeUser = async (event: PostConfirmationTriggerEvent) => {
   });
 
   if (!organisation) {
-    throw new Error(
+    console.error(
       `Organisation with name: '${attributes['custom:organisation']}' could not be found. User was not added to the database.`
     );
+
+    return event;
   }
 
   await prisma.user.create({

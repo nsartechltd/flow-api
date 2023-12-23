@@ -23,37 +23,37 @@ describe('User Service', () => {
     it('should throw an error if organisation does not exist', async () => {
       mockOrganisation.findFirst.mockResolvedValue(null);
 
-      try {
-        await storeUser({
-          version: '1',
-          region: 'eu-west-2',
-          userPoolId: 'eu-west-2_xxXXXxxx',
-          userName: '71e43a8a-xxxx-4dd7-xxxx-cfeafcb77add',
-          callerContext: {
-            awsSdkVersion: 'aws-sdk-unknown-unknown',
-            clientId: 'some-client-id',
+      const logSpy = jest.spyOn(console, 'error');
+
+      await storeUser({
+        version: '1',
+        region: 'eu-west-2',
+        userPoolId: 'eu-west-2_xxXXXxxx',
+        userName: '71e43a8a-xxxx-4dd7-xxxx-cfeafcb77add',
+        callerContext: {
+          awsSdkVersion: 'aws-sdk-unknown-unknown',
+          clientId: 'some-client-id',
+        },
+        triggerSource: 'PostConfirmation_ConfirmSignUp',
+        request: {
+          userAttributes: {
+            sub: '71e43a8a-xxxx-4dd7-xxxx-cfeafcb77add',
+            email_verified: 'true',
+            birthdate: '01/01/1999',
+            'cognito:user_status': 'CONFIRMED',
+            'cognito:email_alias': 'some.one@email.com',
+            given_name: 'Some',
+            family_name: 'One',
+            email: 'some.one@email.com',
+            'custom:organisation': 'Example Organisation',
           },
-          triggerSource: 'PostConfirmation_ConfirmSignUp',
-          request: {
-            userAttributes: {
-              sub: '71e43a8a-xxxx-4dd7-xxxx-cfeafcb77add',
-              email_verified: 'true',
-              birthdate: '01/01/1999',
-              'cognito:user_status': 'CONFIRMED',
-              'cognito:email_alias': 'some.one@email.com',
-              given_name: 'Some',
-              family_name: 'One',
-              email: 'some.one@email.com',
-              'custom:organisation': 'Example Organisation',
-            },
-          },
-          response: {},
-        });
-      } catch (err) {
-        expect(err.message).toEqual(
-          `Organisation with name: 'Example Organisation' could not be found. User was not added to the database.`
-        );
-      }
+        },
+        response: {},
+      });
+
+      expect(logSpy).toHaveBeenCalledWith(
+        `Organisation with name: 'Example Organisation' could not be found. User was not added to the database.`
+      );
     });
 
     it('should call user create', async () => {
