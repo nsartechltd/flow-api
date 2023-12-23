@@ -2,7 +2,6 @@
   "name": "flow-api",
   "version": "1.0.0",
   "description": "Backend API for the Flow project",
-  "main": "index.js",
   "scripts": {
     "start": "sls offline",
     "test": "jest --runInBand",
@@ -45,6 +44,9 @@
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.478.0",
-    "@prisma/client": "^5.7.1"
+    "@middy/core": "^4.7.0",
+    "@middy/http-json-body-parser": "^4.7.0",
+    "@prisma/client": "^5.7.1",
+    "zod": "^3.22.4"
   }
 }
