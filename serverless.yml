@@ -34,3 +34,9 @@ functions:
           pool: ${ssm:/flow/COGNITO_USER_POOL_NAME}
           trigger: PostConfirmation
           existing: true
+  createOrganisation:
+    handler: src/functions/organisation.createHandler
+    events:
+      - http:
+          path: /organisations
+          method: post
