@@ -47,6 +47,7 @@
     "@middy/core": "^4.7.0",
     "@middy/http-json-body-parser": "^4.7.0",
     "@prisma/client": "^5.7.1",
+    "serverless-domain-manager": "^7.3.3",
     "zod": "^3.22.4"
   }
 }

@@ -4,4 +4,4 @@ export AWS_ACCESS_KEY_ID=$(echo "$TEMP_ROLE" | jq -r '.Credentials.AccessKeyId')
 export AWS_SECRET_ACCESS_KEY=$(echo "$TEMP_ROLE" | jq -r '.Credentials.SecretAccessKey')
 export AWS_SESSION_TOKEN=$(echo "$TEMP_ROLE" | jq -r '.Credentials.SessionToken')
 export AWS_REGION=eu-west-2
-SLS_DEBUG=* serverless deploy --stage dev --force
+serverless deploy --verbose --stage dev --force

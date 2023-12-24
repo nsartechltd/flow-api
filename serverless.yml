@@ -3,6 +3,7 @@ service: flow-api
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
+  - serverless-domain-manager
 
 provider:
   name: aws
@@ -17,6 +18,12 @@ provider:
     ENVIRONMENT: ${self:provider.stage}
     NODE_ENV: ${self:custom.nodeEnv.${self:provider.stage}}
     DATABASE_URL: ${ssm:/flow/rds/DB_URL}
+  
+package:
+  excludeDevDependencies: true
+  individually: true
+  patterns:
+    - "!tests/**"
 
 custom:
   serverless-offline:
@@ -25,6 +32,18 @@ custom:
   nodeEnv:
     dev: development
     prod: production
+  domain: flow-api${self:custom.stageDomainPrefix.${self:provider.stage}}.nsar-tech.co.uk
+  stageDomainPrefix:
+    dev: "-dev"
+    prod: ""
+  customDomain:
+    rest:
+      domainName: ${self:custom.domain}
+      createRoute53Record: false # managed in root account
+      endpointType: "regional"
+      certificateArn: ${ssm:/nsar-tech/CERTIFICATE_ARN}
+      autoDomain: true
+      autoDomainWaitFor: 120
 
 functions:
   storeUser:
