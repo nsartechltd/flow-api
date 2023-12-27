@@ -1,10 +1,11 @@
 import { PostConfirmationTriggerEvent } from 'aws-lambda';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import { getPrismaClient } from '../libs/prisma-client';
 
 export const storeUser = async (event: PostConfirmationTriggerEvent) => {
-  console.log('Event received: ', event);
+  console.log('Event received: ', JSON.stringify(event));
+
+  const prisma = getPrismaClient();
 
   const { userAttributes: attributes } = event.request;
 

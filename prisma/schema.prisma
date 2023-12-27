@@ -12,9 +12,10 @@ datasource db {
 }
 
 model Organisation {
-  id   String @id @default(uuid())
-  name String @unique
-  User User[]
+  id                   String @id @default(uuid())
+  name                 String @unique
+  stripeSubscriptionId String?
+  User                 User[]
 }
 
 model User {
