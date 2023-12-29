@@ -12,19 +12,20 @@ datasource db {
 }
 
 model Organisation {
-  id                   String @id @default(uuid())
-  name                 String @unique
-  stripeSubscriptionId String?
-  User                 User[]
+  id                    String  @id @default(uuid())
+  name                  String  @unique
+  stripeSubscriptionId  String?
+  vatRegistrationNumber Int?
+  User                  User[]
 }
 
 model User {
   id             String       @id @default(uuid())
-  firstName      String
-  lastName       String
+  firstName      String?
+  lastName       String?
   email          String       @unique
-  birthdate      String
-  cognitoId      String       @unique
+  birthdate      String?
+  cognitoId      String?      @unique
   organisationId String
   organisation   Organisation @relation(fields: [organisationId], references: [id])
 }

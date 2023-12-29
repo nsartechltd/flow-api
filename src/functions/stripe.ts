@@ -6,7 +6,16 @@ import {
 import middy from '@middy/core';
 import jsonBodyParser, { Event } from '@middy/http-json-body-parser';
 
-import { handleStripeWebhook, handleCheckoutSession } from '../services/stripe';
+import {
+  handleStripeWebhook,
+  handleCreateSession,
+  handleGetSession,
+} from '../services/stripe';
+import { validator } from '../libs/validation';
+import {
+  createSessionSchema,
+  getSessionSchema,
+} from '../libs/validation/schemas/stripe';
 
 const stripeWebhook = async (event: Event) => handleStripeWebhook(event);
 export const webhookHandler: Handler = middy<
@@ -16,10 +25,19 @@ export const webhookHandler: Handler = middy<
   .use(jsonBodyParser())
   .handler(stripeWebhook);
 
-const checkoutSession = async (event: Event) => handleCheckoutSession(event);
-export const checkoutSessionHandler: Handler = middy<
+const createSession = async (event: Event) => handleCreateSession(event);
+export const createSessionHandler: Handler = middy<
   APIGatewayProxyEvent,
   APIGatewayProxyResult
 >()
   .use(jsonBodyParser())
-  .handler(checkoutSession);
+  .use(validator(createSessionSchema))
+  .handler(createSession);
+
+const getSession = async (event: Event) => handleGetSession(event);
+export const getSessionHandler: Handler = middy<
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult
+>()
+  .use(validator(getSessionSchema))
+  .handler(getSession);
