@@ -28,6 +28,12 @@ export const handleStripeWebhook = async (
   const response: APIGatewayProxyResult = {
     statusCode: 200,
     body: '',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Headers': '*',
+      'Content-Type': 'application/json',
+    },
   };
 
   try {
@@ -94,6 +100,12 @@ export const handleCreateSession = async (
   const response: APIGatewayProxyResult = {
     statusCode: 200,
     body: '',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Headers': '*',
+      'Content-Type': 'application/json',
+    },
   };
 
   const flowAppUrl = process.env.FLOW_APP_URL;
@@ -141,6 +153,12 @@ export const handleGetSession = async (
   const response: APIGatewayProxyResult = {
     statusCode: 200,
     body: '',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Headers': '*',
+      'Content-Type': 'application/json',
+    },
   };
 
   try {

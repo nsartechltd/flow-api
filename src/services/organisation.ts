@@ -21,6 +21,12 @@ export const createOrganisation = async (
   const response: APIGatewayProxyResult = {
     statusCode: 200,
     body: '',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Headers': '*',
+      'Content-Type': 'application/json',
+    },
   };
 
   try {
