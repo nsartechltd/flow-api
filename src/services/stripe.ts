@@ -9,6 +9,7 @@ import {
   createSessionSchema,
   getSessionSchema,
 } from '../libs/validation/schemas/stripe';
+import { NotFoundError } from '../libs/errors';
 
 export type CreateSessionPayload = z.infer<typeof createSessionSchema>['body'];
 export type GetSessionPayload = z.infer<
@@ -28,54 +29,44 @@ export const handleStripeWebhook = async (
   const response: APIGatewayProxyResult = {
     statusCode: 200,
     body: '',
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true,
-      'Access-Control-Allow-Headers': '*',
-      'Content-Type': 'application/json',
-    },
   };
 
   try {
-    const organisationCustomField = body.data.object.custom_fields.find(
-      (field) => field.key === 'organisation'
-    );
-
-    if (!organisationCustomField) {
-      console.error(
-        `No 'organisation' custom field was present in the webhook body. Unable to onboard the organisation.`
-      );
-
-      return response;
-    }
-
-    const organisation = await prisma.organisation.create({
-      data: {
-        name: String(organisationCustomField.text?.value),
-        stripeSubscriptionId: String(body.data.object.subscription),
-      },
-    });
-
-    console.log('Organisation created', organisation.id);
-
     const customerEmail = body.data.object.customer_details?.email;
 
     if (!customerEmail) {
       console.error(
-        `No 'customer_email' was present in the the webhook body. Unable to signup the user.`
+        `No 'customer_email' was present in the the webhook body. Unable to start user subscription.`
       );
 
       return response;
     }
 
-    const user = await prisma.user.create({
-      data: {
+    const user = await prisma.user.findFirst({
+      where: {
         email: customerEmail,
-        organisationId: organisation.id,
+      },
+      include: {
+        organisation: true,
       },
     });
 
-    console.log('User created', user.id);
+    if (!user) {
+      throw new NotFoundError('User was not found, retry webhook.');
+    }
+
+    console.log('User found', user);
+
+    const organisation = await prisma.organisation.update({
+      where: {
+        id: user.organisation.id,
+      },
+      data: {
+        stripeSubscriptionId: String(body.data.object.subscription),
+      },
+    });
+
+    console.log('Organisated updated', organisation);
   } catch (err: any) {
     console.error('Error creating session on Stripe', err);
 
