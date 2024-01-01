@@ -71,7 +71,7 @@ export const handleStripeWebhook = async (
   } catch (err: any) {
     console.error('Error creating session on Stripe', err);
 
-    response.statusCode = 500;
+    response.statusCode = err.statusCode ?? 500;
     response.body = JSON.stringify({
       error: 'There was a problem creating the session on Stripe',
     });
@@ -145,6 +145,8 @@ export const handleGetSession = async (
 
   try {
     const session = await stripe.checkout.sessions.retrieve(params.sessionId);
+
+    console.log('Session found: ', JSON.stringify(session));
 
     const responseBody = {
       status: session.status,

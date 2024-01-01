@@ -17,6 +17,8 @@ describe('Organisation API', () => {
       expect(response.body).toEqual({
         id: expect.any(String),
         name: 'Example Organisation',
+        stripeSubscriptionId: null,
+        vatRegistrationNumber: null,
       });
     });
   });
