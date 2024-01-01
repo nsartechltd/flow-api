@@ -1,11 +1,10 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
-import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { Event } from '@middy/http-json-body-parser';
 
 import { createOrganisationSchema } from '../libs/validation';
-
-const prisma = new PrismaClient();
+import { getPrismaClient } from '../libs/prisma-client';
+import { headers } from '../libs/headers';
 
 export type OrganisationPayload = z.infer<
   typeof createOrganisationSchema
@@ -14,13 +13,16 @@ export type OrganisationPayload = z.infer<
 export const createOrganisation = async (
   event: Event
 ): Promise<APIGatewayProxyResult> => {
-  console.log('Event received: ', event);
+  console.log('Event received: ', JSON.stringify(event));
+
+  const prisma = getPrismaClient();
 
   const body: OrganisationPayload = event.body as OrganisationPayload;
 
   const response: APIGatewayProxyResult = {
     statusCode: 200,
     body: '',
+    headers: headers(),
   };
 
   try {

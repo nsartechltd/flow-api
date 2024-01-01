@@ -48,6 +48,7 @@
     "@middy/core": "^4.7.0",
     "@middy/http-json-body-parser": "^4.7.0",
     "@prisma/client": "^5.7.1",
+    "stripe": "^14.10.0",
     "zod": "^3.22.4"
   }
 }

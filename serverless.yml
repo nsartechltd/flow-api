@@ -17,7 +17,10 @@ provider:
   environment:
     ENVIRONMENT: ${self:provider.stage}
     NODE_ENV: ${self:custom.nodeEnv.${self:provider.stage}}
+    # DATABASE_URL: postgresql://postgres@localhost:5432/flow
     DATABASE_URL: ${ssm:/flow/rds/DB_URL}
+    FLOW_APP_URL: ${self:custom.flowAppUrl.${self:provider.stage}}
+    STRIPE_SECRET_KEY: ${ssm:/flow/stripe/SECRET_KEY}
   
 package:
   excludeDevDependencies: true
@@ -26,6 +29,10 @@ package:
     - "!tests/**"
 
 custom:
+  flowAppUrl:
+    # dev: http://localhost:5173
+    dev: https://flow-dev.nsar-tech.co.uk
+    prod: https://flow.nsar-tech.co.uk
   serverless-offline:
     host: 0.0.0.0
     httpPort: 3000
@@ -46,6 +53,7 @@ custom:
       autoDomainWaitFor: 120
 
 functions:
+  # Flow Cognito User Pool
   storeUser:
     handler: src/functions/user.storeHandler
     events:
@@ -53,9 +61,35 @@ functions:
           pool: ${ssm:/flow/COGNITO_USER_POOL_NAME}
           trigger: PostConfirmation
           existing: true
+  
+  # Admin Dashboard
   createOrganisation:
     handler: src/functions/organisation.createHandler
     events:
       - http:
           path: /organisations
           method: post
+          cors: true
+  
+  # Stripe
+  stripeWebhook:
+    handler: src/functions/stripe.webhookHandler
+    events:
+      - http:
+          path: /stripe/webhook
+          method: post
+          cors: true
+  stripeCreateSession:
+    handler: src/functions/stripe.createSessionHandler
+    events:
+      - http:
+          path: /stripe/session
+          method: post
+          cors: true
+  stripeGetSession:
+    handler: src/functions/stripe.getSessionHandler
+    events:
+      - http:
+          path: /stripe/session/{sessionId}
+          method: get
+          cors: true
