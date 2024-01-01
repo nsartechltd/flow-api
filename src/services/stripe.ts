@@ -10,6 +10,7 @@ import {
   getSessionSchema,
 } from '../libs/validation/schemas/stripe';
 import { NotFoundError } from '../libs/errors';
+import { headers } from '../libs/headers';
 
 export type CreateSessionPayload = z.infer<typeof createSessionSchema>['body'];
 export type GetSessionPayload = z.infer<
@@ -91,12 +92,7 @@ export const handleCreateSession = async (
   const response: APIGatewayProxyResult = {
     statusCode: 200,
     body: '',
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true,
-      'Access-Control-Allow-Headers': '*',
-      'Content-Type': 'application/json',
-    },
+    headers: headers(),
   };
 
   const flowAppUrl = process.env.FLOW_APP_URL;
@@ -144,12 +140,7 @@ export const handleGetSession = async (
   const response: APIGatewayProxyResult = {
     statusCode: 200,
     body: '',
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true,
-      'Access-Control-Allow-Headers': '*',
-      'Content-Type': 'application/json',
-    },
+    headers: headers(),
   };
 
   try {

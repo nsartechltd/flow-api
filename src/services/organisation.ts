@@ -4,6 +4,7 @@ import { Event } from '@middy/http-json-body-parser';
 
 import { createOrganisationSchema } from '../libs/validation';
 import { getPrismaClient } from '../libs/prisma-client';
+import { headers } from '../libs/headers';
 
 export type OrganisationPayload = z.infer<
   typeof createOrganisationSchema
@@ -21,12 +22,7 @@ export const createOrganisation = async (
   const response: APIGatewayProxyResult = {
     statusCode: 200,
     body: '',
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true,
-      'Access-Control-Allow-Headers': '*',
-      'Content-Type': 'application/json',
-    },
+    headers: headers(),
   };
 
   try {

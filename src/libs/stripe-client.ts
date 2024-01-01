@@ -1,16 +1,16 @@
 import Stripe from 'stripe';
 
+import config from '../config';
+
 let stripeClient: Stripe;
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-
 export const getStripeClient = (): Stripe => {
-  if (!stripeSecretKey) {
+  if (!config.stripeSecretKey) {
     throw new Error('Stripe secret key has not been set.');
   }
 
   if (!stripeClient) {
-    stripeClient = new Stripe(stripeSecretKey);
+    stripeClient = new Stripe(config.stripeSecretKey);
   }
 
   return stripeClient;
