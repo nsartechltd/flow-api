@@ -1,7 +1,8 @@
 name: Flow API Deployment
 
 on:
-  push
+  pull_request:
+    types: [opened, reopened]
 
 jobs:
   deploy:
