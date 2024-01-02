@@ -28,10 +28,8 @@ export const storeUser = async (event: PostConfirmationTriggerEvent) => {
         cognitoId: attributes.sub,
       },
     });
-  } catch (err: any) {
-    console.error(
-      `There was a problem storing the user in the database: ${err.message}`
-    );
+  } catch (err) {
+    console.error('There was a problem storing the user in the database', err);
   }
 
   return event;

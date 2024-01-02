@@ -1,0 +1,60 @@
+name: Flow API CI
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    environment: dev
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20.x"
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Prettier
+        run: npm run pretty:check
+
+      - name: Run Linting
+        run: npm run lint
+
+      - name: Create Env File
+        run: echo -en 'DATABASE_URL=postgresql://postgres:password@db:5432/flow\nSTRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}' > .env
+
+      - name: Build Stack
+        run: docker compose up -d
+
+      # Replace with something snazzier
+      # serverless-plugin-typescript is the reason for this
+      - name: Wait For Stack
+        run: sleep 60
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: test-results
+          path: junit.xml
+          reporter: jest-junit
+
+      - name: Docker Status - Fail
+        run: docker compose ps && docker compose logs -t
+        if: failure()
