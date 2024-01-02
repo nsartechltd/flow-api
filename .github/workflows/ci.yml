@@ -3,7 +3,7 @@ name: Flow API CI
 on: [push, pull_request]
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
 
     environment: dev
