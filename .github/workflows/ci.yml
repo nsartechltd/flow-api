@@ -6,6 +6,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    environment: dev
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
