@@ -25,6 +25,9 @@ jobs:
       - name: Run Linting
         run: npm run lint
 
+      - name: Create Env File
+        run: echo -en 'DATABASE_URL=postgresql://postgres:password@db:5432/flow\nSTRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}' > .env
+
       - name: Build Stack
         run: docker compose up -d
 
