@@ -33,8 +33,8 @@ export const createOrganisation = async (
     });
 
     response.body = JSON.stringify(organisation);
-  } catch (err: any) {
-    console.error('Error creating organisation', err.message);
+  } catch (err) {
+    console.error('Error creating organisation', err);
 
     response.statusCode = 500;
     response.body = JSON.stringify({

@@ -68,10 +68,14 @@ export const handleStripeWebhook = async (
     });
 
     console.log('Organisated updated', organisation);
-  } catch (err: any) {
+  } catch (err) {
     console.error('Error creating session on Stripe', err);
+    response.statusCode = 500;
 
-    response.statusCode = err.statusCode ?? 500;
+    if (err instanceof NotFoundError) {
+      response.statusCode = err.statusCode;
+    }
+
     response.body = JSON.stringify({
       error: 'There was a problem creating the session on Stripe',
     });
@@ -116,7 +120,7 @@ export const handleCreateSession = async (
 
     response.statusCode = session.lastResponse.statusCode;
     response.body = JSON.stringify(session);
-  } catch (err: any) {
+  } catch (err) {
     console.error('Error creating session on Stripe', err);
 
     response.statusCode = 500;
@@ -164,7 +168,7 @@ export const handleGetSession = async (
 
     response.statusCode = session.lastResponse.statusCode;
     response.body = JSON.stringify(responseBody);
-  } catch (err: any) {
+  } catch (err) {
     console.error('Error creating session on Stripe', err);
 
     response.statusCode = 500;
