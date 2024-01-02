@@ -3,7 +3,7 @@ name: Flow API Deployment
 on:
   push:
     branches:
-      - 'master'
+      - master
 
 jobs:
   deploy-dev:
