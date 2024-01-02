@@ -1,6 +1,7 @@
 service: flow-api
 
 plugins:
+  - serverless-offline-ssm
   - serverless-plugin-typescript
   - serverless-offline
   - serverless-domain-manager
@@ -17,7 +18,6 @@ provider:
   environment:
     ENVIRONMENT: ${self:provider.stage}
     NODE_ENV: ${self:custom.nodeEnv.${self:provider.stage}}
-    # DATABASE_URL: postgresql://postgres@localhost:5432/flow
     DATABASE_URL: ${ssm:/flow/rds/DB_URL}
     FLOW_APP_URL: ${self:custom.flowAppUrl.${self:provider.stage}}
     STRIPE_SECRET_KEY: ${ssm:/flow/stripe/SECRET_KEY}
@@ -26,28 +26,40 @@ package:
   excludeDevDependencies: true
   individually: true
   patterns:
-    - "!tests/**"
+    - '!tests/**'
 
 custom:
+  serverless-offline-ssm:
+    stages:
+      - local
+    ssm:
+      '/flow/rds/DB_URL': ${env:DATABASE_URL}
+      '/flow/stripe/SECRET_KEY': ${env:STRIPE_SECRET_KEY}
+      '/flow/SECURITY_GROUP_ID': 'some-id'
+      '/flow/PRIVATE_SUBNET_IDS': '1,2,3'
+      '/nsar-tech/CERTIFICATE_ARN': 'arn:aws:acm:eu-west-2:123456789123:certificate/693cedea-5e9a-47f3-916f-413d7d5f468d'
+      '/flow/COGNITO_USER_POOL_NAME': 'example-user-pool-name'
   flowAppUrl:
-    # dev: http://localhost:5173
+    local: http://localhost:5173
     dev: https://flow-dev.nsar-tech.co.uk
     prod: https://flow.nsar-tech.co.uk
   serverless-offline:
     host: 0.0.0.0
     httpPort: 3000
   nodeEnv:
+    local: local
     dev: development
     prod: production
   domain: flow-api${self:custom.stageDomainPrefix.${self:provider.stage}}.nsar-tech.co.uk
   stageDomainPrefix:
-    dev: "-dev"
-    prod: ""
+    local: '-local'
+    dev: '-dev'
+    prod: ''
   customDomain:
     rest:
       domainName: ${self:custom.domain}
       createRoute53Record: false # managed in root account
-      endpointType: "regional"
+      endpointType: 'regional'
       certificateArn: ${ssm:/nsar-tech/CERTIFICATE_ARN}
       autoDomain: true
       autoDomainWaitFor: 120

@@ -1,4 +1,4 @@
-name: Flow API
+name: Flow API Deployment
 
 on:
   push

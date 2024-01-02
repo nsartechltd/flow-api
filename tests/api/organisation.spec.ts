@@ -4,7 +4,7 @@ describe('Organisation API', () => {
   let request: SuperTest<STest>;
 
   beforeAll(() => {
-    request = supertest('http://0.0.0.0:3000/dev');
+    request = supertest('http://0.0.0.0:3000/local');
   });
 
   describe('POST /organisations', () => {

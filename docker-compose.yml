@@ -1,0 +1,34 @@
+version: "3"
+services:
+  db:
+    container_name: db
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: flow
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U postgres -d flow'"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  api:
+    container_name: api
+    build: .
+    tty: true
+    environment:
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      DATABASE_URL: ${DATABASE_URL}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/home/node/app:cached
+    command: sh -c '
+      npx sls config credentials --overwrite --provider aws --key KEY --secret SECRET &&
+      npx prisma migrate deploy &&
+      npm start'
+    depends_on:
+      db:
+        condition: service_healthy
