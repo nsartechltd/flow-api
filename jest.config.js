@@ -1,16 +1,7 @@
 module.exports = {
   testEnvironment: 'node',
   coverageDirectory: './coverage',
-  reporters: [
-    'default',
-    [
-      'jest-junit',
-      {
-        outputDirectory: './junit',
-        outputName: 'flow-api.xml',
-      },
-    ],
-  ],
+  reporters: ['default', 'jest-junit'],
   transformIgnorePatterns: ['^.+\\.js$'],
   coverageReporters: ['text', 'lcov', 'text-summary'],
   testMatch: ['**/*.spec.ts'],
