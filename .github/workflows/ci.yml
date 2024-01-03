@@ -21,8 +21,8 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
-          cache: "npm"
+          node-version: '20.x'
+          cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci
@@ -33,8 +33,13 @@ jobs:
       - name: Run Linting
         run: npm run lint
 
-      - name: Create Env File
-        run: echo -en 'DATABASE_URL=postgresql://postgres:password@db:5432/flow\nSTRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}' > .env
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_DATABASE_URL: postgresql://postgres:password@db:5432/flow
+          envkey_STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          file_name: .env
+          fail_on_empty: true
 
       - name: Build Stack
         run: docker compose up -d
