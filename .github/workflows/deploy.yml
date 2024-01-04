@@ -35,6 +35,11 @@ jobs:
           output-credentials: true
           role-skip-session-tagging: true
 
+      - name: Run Migrations
+        uses: aws-actions/aws-codebuild-run-build@v1
+        with:
+          project-name: dev-flow-migrate
+
       - name: Deploy
         run: |
           export AWS_ACCESS_KEY_ID=${{ steps.creds.outputs.aws-access-key-id }}
