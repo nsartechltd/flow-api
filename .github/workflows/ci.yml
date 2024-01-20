@@ -53,13 +53,14 @@ jobs:
       - name: Run Tests
         run: npm test
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
-        with:
-          name: test-results
-          path: junit.xml
-          reporter: jest-junit
+      # TODO FLOW-21: Implement code coverage
+      # - name: Test Report
+      #   uses: dorny/test-reporter@v1
+      #   if: success() || failure()
+      #   with:
+      #     name: test-results
+      #     path: junit.xml
+      #     reporter: jest-junit
 
       - name: Docker Status - Fail
         run: docker compose ps && docker compose logs -t
