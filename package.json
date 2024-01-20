@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Backend API for the Flow project",
   "scripts": {
-    "start": "sls offline --stage local --useInProcess",
+    "start": "sls offline --stage local",
     "test": "DOTENV_CONFIG_PATH=./.env.test-integration jest -c jest.integration.config.ts --runInBand",
     "build": "npx tsc",
     "lint": "npx eslint --max-warnings=0 ./src",

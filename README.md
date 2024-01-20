@@ -4,8 +4,9 @@
 
 To use this repo you will need the following:
 
-1. [nvm][nvm] to install, run `curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash` to install.
-1. [Node.js v18][nodejs]: If you have `nvm` installed you can run `nvm install 18` to install (this is recommended).
+1. [nvm][nvm] - [see here](https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script) for installation details.
+2. [Node.js v20][nodejs]: If you have `nvm` installed you can run `nvm install 20` to install (this is recommended).
+3. [Docker][docker]: Install Docker for running the API locally
 
 ## Running locally
 
@@ -14,8 +15,12 @@ To use this repo you will need the following:
 $ npm i
 
 # start local server
-$ npm start
+$ docker compose up --build
+
+# run integration tests (make sure server is started)
+$ npm test
 ```
 
-[nvm]: https://github.com/creationix/nvm#installation-and-update
+[nvm]: https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script
 [nodejs]: https://nodejs.org/
+[docker]: https://docs.docker.com/desktop/install/mac-install/

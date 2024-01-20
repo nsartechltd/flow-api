@@ -36,9 +36,14 @@ export const stripeWebhookVerifier = (): middy.MiddlewareObj<
     } catch (err) {
       console.error('Error verifying Stripe webhook', err);
 
+      // Return the initial AWS request ID to help with log searching
+      const requestId = event.requestContext.requestId;
+
       return {
         statusCode: 401,
-        body: JSON.stringify(err),
+        body: JSON.stringify({
+          error: `Request ID: '${requestId}' - There was a problem handling the Stripe webhook.`,
+        }),
       };
     }
   };

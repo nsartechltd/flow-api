@@ -46,9 +46,69 @@ describe('Stripe API', () => {
         .set('Stripe-Signature', 'wrong-signature');
 
       expect(response.statusCode).toEqual(401);
-      expect(response.body).toEqual({
-        error: '',
+      expect(response.body.error).toMatch(
+        /Request ID: '.+' - There was a problem handling the Stripe webhook/
+      );
+    });
+
+    it('should throw a 404 if the user cannot be found', async () => {
+      const stripe = getStripeClient();
+
+      const eventBody = {
+        data: {
+          object: {
+            customer_details: {
+              email: 'wrong.person@email.com',
+            },
+            subscription: 'some-sub-id',
+          },
+        },
+        type: 'checkout.session.completed',
+      };
+
+      const signature = stripe.webhooks.generateTestHeaderString({
+        payload: JSON.stringify(eventBody, null, 2),
+        secret: String(config.stripe.webhookSecret),
       });
+
+      const response = await request
+        .post(`/stripe/webhook`)
+        .send(eventBody)
+        .set('Stripe-Signature', signature);
+
+      expect(response.statusCode).toEqual(404);
+      expect(response.body.error).toMatch(
+        /Request ID: '.+' - There was a problem handling the Stripe webhook/
+      );
+    });
+
+    it('should throw a 400 if the customer email is missing', async () => {
+      const stripe = getStripeClient();
+
+      const eventBody = {
+        data: {
+          object: {
+            customer_details: {},
+            subscription: 'some-sub-id',
+          },
+        },
+        type: 'checkout.session.completed',
+      };
+
+      const signature = stripe.webhooks.generateTestHeaderString({
+        payload: JSON.stringify(eventBody, null, 2),
+        secret: String(config.stripe.webhookSecret),
+      });
+
+      const response = await request
+        .post(`/stripe/webhook`)
+        .send(eventBody)
+        .set('Stripe-Signature', signature);
+
+      expect(response.statusCode).toEqual(400);
+      expect(response.body.error).toMatch(
+        /Request ID: '.+' - There was a problem handling the Stripe webhook/
+      );
     });
 
     it('should handle a stripe webhook', async () => {

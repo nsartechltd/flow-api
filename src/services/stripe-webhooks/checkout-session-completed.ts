@@ -2,7 +2,7 @@ import { APIGatewayProxyResult } from 'aws-lambda';
 import { Event } from '@middy/http-json-body-parser';
 import Stripe from 'stripe';
 
-import { AuthError, BadRequestError, NotFoundError } from '../../libs/errors';
+import { BadRequestError, NotFoundError } from '../../libs/errors';
 import { getPrismaClient } from '../../libs/prisma-client';
 
 export const checkoutSessionCompleted = async (
@@ -61,7 +61,6 @@ export const checkoutSessionCompleted = async (
     if (
       err instanceof NotFoundError ||
       err instanceof BadRequestError ||
-      err instanceof AuthError ||
       err instanceof Stripe.errors.StripeSignatureVerificationError
     ) {
       response.statusCode = Number(err.statusCode);
