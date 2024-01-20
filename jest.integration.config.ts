@@ -1,16 +1,27 @@
-module.exports = {
+import type { Config } from 'jest';
+
+const config: Config = {
   testEnvironment: 'node',
   coverageDirectory: './coverage',
   reporters: ['default', 'jest-junit'],
   transformIgnorePatterns: ['^.+\\.js$'],
   coverageReporters: ['text', 'lcov', 'text-summary'],
-  testMatch: ['**/*.spec.ts'],
+  testMatch: ['**/*.integration.ts'],
   moduleDirectories: ['node_modules', 'src'],
   moduleFileExtensions: ['ts', 'js', 'json'],
+  globalSetup: '<rootDir>/tests/global-setup.ts',
+  globalTeardown: '<rootDir>/tests/global-teardown.ts',
   transform: {
-    '^.+\\.(js|ts|)$': 'ts-jest',
+    '^.+\\.[ts]s$': [
+      'ts-jest',
+      {
+        tsconfig: '<rootDir>/tsconfig.spec.json',
+      },
+    ],
   },
+  setupFiles: ['dotenv/config'],
   collectCoverage: true,
+  collectCoverageFrom: ['src/**/*.ts'],
   coverageThreshold: {
     global: {
       branches: 85,
@@ -20,3 +31,5 @@ module.exports = {
     },
   },
 };
+
+export default config;

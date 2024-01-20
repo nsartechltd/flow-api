@@ -21,6 +21,7 @@ provider:
     DATABASE_URL: ${ssm:/flow/rds/DB_URL}
     FLOW_APP_URL: ${self:custom.flowAppUrl.${self:provider.stage}}
     STRIPE_SECRET_KEY: ${ssm:/flow/stripe/SECRET_KEY}
+    STRIPE_WEBHOOK_SECRET: ${ssm:/flow/stripe/WEBHOOK_SECRET}
   
 package:
   excludeDevDependencies: true
@@ -35,6 +36,7 @@ custom:
     ssm:
       '/flow/rds/DB_URL': ${env:DATABASE_URL, 'some-url'}
       '/flow/stripe/SECRET_KEY': ${env:STRIPE_SECRET_KEY, 'some-secret'}
+      '/flow/stripe/WEBHOOK_SECRET': ${env:STRIPE_WEBHOOK_SECRET, 'some-secret'}
       '/flow/SECURITY_GROUP_ID': 'some-id'
       '/flow/PRIVATE_SUBNET_IDS': '1,2,3'
       '/nsar-tech/CERTIFICATE_ARN': 'arn:aws:acm:eu-west-2:123456789123:certificate/693cedea-5e9a-47f3-916f-413d7d5f468d'

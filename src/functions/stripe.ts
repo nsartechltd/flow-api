@@ -16,12 +16,14 @@ import {
   createSessionSchema,
   getSessionSchema,
 } from '../libs/validation/schemas/stripe';
+import { stripeWebhookVerifier } from '../middleware/stripe';
 
 const stripeWebhook = async (event: Event) => handleStripeWebhook(event);
 export const webhookHandler: Handler = middy<
   APIGatewayProxyEvent,
   APIGatewayProxyResult
 >()
+  .use(stripeWebhookVerifier())
   .use(jsonBodyParser())
   .handler(stripeWebhook);
 

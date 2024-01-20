@@ -8,7 +8,10 @@ const config = {
       ? 'https://flow-dev.nsar-tech.co.uk'
       : 'http://localhost:5173',
   flowAppUrl: process.env.FLOW_APP_URL,
-  stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+  stripe: {
+    secretKey: process.env.STRIPE_SECRET_KEY,
+    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+  },
 };
 
 export default config;

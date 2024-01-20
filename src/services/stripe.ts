@@ -1,87 +1,43 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
 import { Event } from '@middy/http-json-body-parser';
 import { z } from 'zod';
-import Stripe from 'stripe';
 
 import { getStripeClient } from '../libs/stripe-client';
-import { getPrismaClient } from '../libs/prisma-client';
 import {
   createSessionSchema,
   getSessionSchema,
 } from '../libs/validation/schemas/stripe';
-import { NotFoundError } from '../libs/errors';
 import { headers } from '../libs/headers';
+import { checkoutSessionCompleted } from './stripe-webhooks/checkout-session-completed';
+import { chargeSucceeded } from './stripe-webhooks/charge-succeeded';
 
 export type CreateSessionPayload = z.infer<typeof createSessionSchema>['body'];
 export type GetSessionPayload = z.infer<
   typeof getSessionSchema
 >['pathParameters'];
 
+export enum StripeWebhookTypes {
+  CheckoutSessionCompleted = 'checkout.session.completed',
+  ChargeSucceeded = 'charge.succeeded',
+}
+
 export const handleStripeWebhook = async (
   event: Event
 ): Promise<APIGatewayProxyResult> => {
   console.log('Event received: ', JSON.stringify(event));
 
-  const prisma = getPrismaClient();
-
-  const body: Stripe.CheckoutSessionCompletedEvent =
-    event.body as unknown as Stripe.CheckoutSessionCompletedEvent;
-
-  const response: APIGatewayProxyResult = {
-    statusCode: 200,
-    body: '',
-  };
-
-  try {
-    const customerEmail = body.data.object.customer_details?.email;
-
-    if (!customerEmail) {
-      console.error(
-        `No 'customer_email' was present in the the webhook body. Unable to start user subscription.`
-      );
-
-      return response;
-    }
-
-    const user = await prisma.user.findFirst({
-      where: {
-        email: customerEmail,
-      },
-      include: {
-        organisation: true,
-      },
-    });
-
-    if (!user) {
-      throw new NotFoundError('User was not found, retry webhook.');
-    }
-
-    console.log('User found', user);
-
-    const organisation = await prisma.organisation.update({
-      where: {
-        id: user.organisation.id,
-      },
-      data: {
-        stripeSubscriptionId: String(body.data.object.subscription),
-      },
-    });
-
-    console.log('Organisated updated', organisation);
-  } catch (err) {
-    console.error('Error creating session on Stripe', err);
-    response.statusCode = 500;
-
-    if (err instanceof NotFoundError) {
-      response.statusCode = err.statusCode;
-    }
-
-    response.body = JSON.stringify({
-      error: 'There was a problem creating the session on Stripe',
-    });
+  // @ts-expect-error 'type' does exist
+  switch (event.body.type) {
+    case StripeWebhookTypes.CheckoutSessionCompleted:
+      return await checkoutSessionCompleted(event);
+    case StripeWebhookTypes.ChargeSucceeded:
+      return await chargeSucceeded(event);
+    default:
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: 'Webhook type is not supported' }),
+      };
   }
-
-  return response;
 };
 
 export const handleCreateSession = async (

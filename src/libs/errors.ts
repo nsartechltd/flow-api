@@ -16,6 +16,7 @@ export class AuthError extends ExtendableError {
     super(err);
 
     this.statusCode = 401;
+    this.name = 'AuthError';
   }
 }
 
@@ -24,5 +25,15 @@ export class NotFoundError extends ExtendableError {
     super(err);
 
     this.statusCode = 404;
+    this.name = 'NotFoundError';
+  }
+}
+
+export class BadRequestError extends ExtendableError {
+  constructor(err: string) {
+    super(err);
+
+    this.statusCode = 400;
+    this.name = 'BadRequestError';
   }
 }
