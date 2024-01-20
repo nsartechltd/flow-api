@@ -5,12 +5,14 @@ import config from '../config';
 let stripeClient: Stripe;
 
 export const getStripeClient = (): Stripe => {
-  if (!config.stripeSecretKey) {
+  const secretKey = config.stripe.secretKey;
+
+  if (!secretKey) {
     throw new Error('Stripe secret key has not been set.');
   }
 
   if (!stripeClient) {
-    stripeClient = new Stripe(config.stripeSecretKey);
+    stripeClient = new Stripe(secretKey);
   }
 
   return stripeClient;

@@ -3,8 +3,9 @@ node_modules
 .build/
 
 coverage/
-junit/
+junit.xml
 
 .serverless/
 
 .env
+.env.test-integration

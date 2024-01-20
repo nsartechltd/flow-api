@@ -38,8 +38,12 @@ jobs:
         with:
           envkey_DATABASE_URL: postgresql://postgres:password@db:5432/flow
           envkey_STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          envkey_STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
           file_name: .env
           fail_on_empty: true
+
+      - name: Create .env.test-integration file
+        run: cp .env .env.test-integration
 
       - name: Build Stack
         run: docker compose up -d
@@ -52,13 +56,14 @@ jobs:
       - name: Run Tests
         run: npm test
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
-        with:
-          name: test-results
-          path: junit.xml
-          reporter: jest-junit
+      # TODO FLOW-21: Implement code coverage
+      # - name: Test Report
+      #   uses: dorny/test-reporter@v1
+      #   if: success() || failure()
+      #   with:
+      #     name: test-results
+      #     path: junit.xml
+      #     reporter: jest-junit
 
       - name: Docker Status - Fail
         run: docker compose ps && docker compose logs -t
