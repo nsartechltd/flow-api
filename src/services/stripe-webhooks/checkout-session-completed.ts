@@ -11,6 +11,11 @@ export const checkoutSessionCompleted = async (
   const body: Stripe.CheckoutSessionCompletedEvent =
     event.body as unknown as Stripe.CheckoutSessionCompletedEvent;
 
+  console.log(
+    '[checkoutSessionCompletedWebhook] Event body: ',
+    JSON.stringify(body)
+  );
+
   const response: APIGatewayProxyResult = {
     statusCode: 200,
     body: '',
@@ -18,6 +23,11 @@ export const checkoutSessionCompleted = async (
 
   try {
     const customerEmail = body.data.object.customer_details?.email;
+
+    console.log(
+      '[checkoutSessionCompletedWebhook] Customer email: ',
+      customerEmail
+    );
 
     if (!customerEmail) {
       throw new BadRequestError(
@@ -40,7 +50,7 @@ export const checkoutSessionCompleted = async (
       throw new NotFoundError('User was not found, retry webhook.');
     }
 
-    console.log('User found', user);
+    console.log('[checkoutSessionCompletedWebhook] User found: ', user);
 
     const organisation = await prisma.organisation.update({
       where: {
@@ -51,11 +61,17 @@ export const checkoutSessionCompleted = async (
       },
     });
 
-    console.log('Organisation updated', organisation);
+    console.log(
+      '[checkoutSessionCompletedWebhook] Organisation updated: ',
+      organisation
+    );
 
     response.body = JSON.stringify({ success: true });
   } catch (err) {
-    console.error('Error handling Stripe webhook', err);
+    console.error(
+      '[checkoutSessionCompletedWebhook] Error handling Stripe webhook: ',
+      err
+    );
     response.statusCode = 500;
 
     if (

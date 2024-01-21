@@ -24,7 +24,7 @@ export enum StripeWebhookTypes {
 export const handleStripeWebhook = async (
   event: Event
 ): Promise<APIGatewayProxyResult> => {
-  console.log('Event received: ', JSON.stringify(event));
+  console.log('[stripeService] Event received: ', JSON.stringify(event));
 
   // @ts-expect-error 'type' does exist
   switch (event.body.type) {

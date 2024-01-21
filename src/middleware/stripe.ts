@@ -13,8 +13,18 @@ export const stripeWebhookVerifier = (): middy.MiddlewareObj<
     APIGatewayProxyEvent,
     APIGatewayProxyResult
   > = async ({ event }) => {
+    console.log(
+      '[stripeWebhookVerifier] Event received: ',
+      JSON.stringify(event)
+    );
+
     try {
       const stripeSignature = event.headers['Stripe-Signature'];
+
+      console.log(
+        '[stripeWebhookVerifier] Stripe signature: ',
+        stripeSignature
+      );
 
       if (!stripeSignature) {
         throw new AuthError(
@@ -28,13 +38,21 @@ export const stripeWebhookVerifier = (): middy.MiddlewareObj<
 
       const body = JSON.parse(event.body ?? '{}');
 
+      console.log(
+        '[stripeWebhookVerifier] Event body: ',
+        JSON.stringify(event.body)
+      );
+
       stripe.webhooks.constructEvent(
         JSON.stringify(body, null, 2),
         stripeSignature,
         webhookSecret
       );
     } catch (err) {
-      console.error('Error verifying Stripe webhook', err);
+      console.error(
+        '[stripeWebhookVerifier] Error verifying Stripe webhook: ',
+        err
+      );
 
       // Return the initial AWS request ID to help with log searching
       const requestId = event.requestContext.requestId;
