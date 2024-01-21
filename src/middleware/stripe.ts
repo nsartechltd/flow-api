@@ -1,6 +1,6 @@
 import middy from '@middy/core';
 
-import { AuthError } from '../libs/errors';
+import { AuthError, BadRequestError } from '../libs/errors';
 import { getStripeClient } from '../libs/stripe-client';
 import config from '../config';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
@@ -36,15 +36,16 @@ export const stripeWebhookVerifier = (): middy.MiddlewareObj<
 
       const stripe = getStripeClient();
 
-      const body = JSON.parse(event.body ?? '{}');
+      console.log('[stripeWebhookVerifier] Event body: ', event.body);
 
-      console.log(
-        '[stripeWebhookVerifier] Event body: ',
-        JSON.stringify(event.body)
-      );
+      if (!event.body) {
+        throw new BadRequestError(
+          'The webhook event is missing a request body'
+        );
+      }
 
       stripe.webhooks.constructEvent(
-        JSON.stringify(body, null, 2),
+        event.body,
         stripeSignature,
         webhookSecret
       );
