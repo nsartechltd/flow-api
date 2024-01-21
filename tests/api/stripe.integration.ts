@@ -67,7 +67,7 @@ describe('Stripe API', () => {
       };
 
       const signature = stripe.webhooks.generateTestHeaderString({
-        payload: JSON.stringify(eventBody, null, 2),
+        payload: JSON.stringify(eventBody),
         secret: String(config.stripe.webhookSecret),
       });
 
@@ -96,7 +96,7 @@ describe('Stripe API', () => {
       };
 
       const signature = stripe.webhooks.generateTestHeaderString({
-        payload: JSON.stringify(eventBody, null, 2),
+        payload: JSON.stringify(eventBody),
         secret: String(config.stripe.webhookSecret),
       });
 
@@ -127,7 +127,7 @@ describe('Stripe API', () => {
       };
 
       const signature = stripe.webhooks.generateTestHeaderString({
-        payload: JSON.stringify(eventBody, null, 2),
+        payload: JSON.stringify(eventBody),
         secret: String(config.stripe.webhookSecret),
       });
 
