@@ -43,7 +43,16 @@ jobs:
           fail_on_empty: true
 
       - name: Create .env.test-integration file
-        run: cp .env .env.test-integration
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_DATABASE_URL: postgresql://postgres:password@db:5432/flow
+          envkey_STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          envkey_STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          envkey_COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+          envkey_COGNITO_TEST_USER_USERNAME: ${{ secrets.COGNITO_TEST_USER_USERNAME }}
+          envkey_COGNITO_TEST_USER_PASSWORD: ${{ secrets.COGNITO_TEST_USER_PASSWORD }}
+          file_name: .env.test-integration
+          fail_on_empty: true
 
       - name: Build Stack
         run: docker compose up -d
