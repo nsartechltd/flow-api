@@ -11,7 +11,7 @@ describe('Organisation API', () => {
   beforeAll(async () => {
     request = supertest('http://0.0.0.0:3000/local');
 
-    const client = new CognitoIdentityProviderClient();
+    const client = new CognitoIdentityProviderClient({ region: 'eu-west-2' });
     const command = new InitiateAuthCommand({
       AuthFlow: 'USER_PASSWORD_AUTH',
       AuthParameters: {

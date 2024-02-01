@@ -9,7 +9,7 @@ import { getJwksClient } from '../libs/jwks-client';
 import { AuthError } from '../libs/errors';
 
 const fetchCognitoPublicKey = async (kid: string) => {
-  const region = 'eu-west-2';
+  const region = 'eu-west-2'; // should this possibly be an env var?
   const userPoolId = process.env.COGNITO_USER_POOL_ID;
   const url = `https://cognito-idp.${region}.amazonaws.com/${userPoolId}/.well-known/jwks.json`;
 
