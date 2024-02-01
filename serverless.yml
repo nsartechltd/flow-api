@@ -35,12 +35,13 @@ custom:
       - local
     ssm:
       '/flow/rds/DB_URL': ${env:DATABASE_URL, 'some-url'}
-      '/flow/stripe/SECRET_KEY': ${env:STRIPE_SECRET_KEY, 'some-secret'}
-      '/flow/stripe/WEBHOOK_SECRET': ${env:STRIPE_WEBHOOK_SECRET, 'some-secret'}
+      '/flow/stripe/SECRET_KEY': ${env:STRIPE_SECRET_KEY, 'some-secret-key'}
+      '/flow/stripe/WEBHOOK_SECRET': ${env:STRIPE_WEBHOOK_SECRET, 'some-webhook-secret'}
       '/flow/SECURITY_GROUP_ID': 'some-id'
       '/flow/PRIVATE_SUBNET_IDS': '1,2,3'
       '/nsar-tech/CERTIFICATE_ARN': 'arn:aws:acm:eu-west-2:123456789123:certificate/693cedea-5e9a-47f3-916f-413d7d5f468d'
-      '/flow/COGNITO_USER_POOL_NAME': 'example-user-pool-name'
+      '/flow/cognito/USER_POOL_NAME': 'example-user-pool-name'
+      '/flow/cognito/USER_POOL_ID': ${env:COGNITO_USER_POOL_ID, 'some-user-pool-id'}
   flowAppUrl:
     local: http://localhost:5173
     dev: https://flow-dev.nsar-tech.co.uk
@@ -67,12 +68,18 @@ custom:
       autoDomainWaitFor: 120
 
 functions:
+  # Authoriser
+  flowAuthoriser:
+    environment:
+      COGNITO_USER_POOL_ID: ${ssm:/flow/cognito/USER_POOL_ID}
+    handler: src/functions/auth.verifyHandler
+
   # Flow Cognito User Pool
   storeUser:
     handler: src/functions/user.storeHandler
     events:
       - cognitoUserPool:
-          pool: ${ssm:/flow/COGNITO_USER_POOL_NAME}
+          pool: ${ssm:/flow/cognito/USER_POOL_NAME}
           trigger: PostConfirmation
           existing: true
   
@@ -84,6 +91,7 @@ functions:
           path: /organisations
           method: post
           cors: true
+          authorizer: flowAuthoriser
   
   # Stripe
   stripeWebhook:
