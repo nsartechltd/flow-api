@@ -115,3 +115,13 @@ functions:
           path: /stripe/session/{sessionId}
           method: get
           cors: true
+  
+  # Contacts
+  createContact:
+    handler: src/functions/contact.createContactHandler
+    events:
+      - http:
+          path: /contact
+          method: post
+          cors: true
+          authorizer: flowAuthorizer
