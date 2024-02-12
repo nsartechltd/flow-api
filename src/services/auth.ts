@@ -32,7 +32,10 @@ const fetchCognitoPublicKey = async (kid: string) => {
 export const verifyToken = async (
   event: APIGatewayTokenAuthorizerEvent
 ): Promise<APIGatewayAuthorizerResult> => {
-  console.log('Authorisation event received: ', JSON.stringify(event));
+  console.log(
+    '[authService] Authorisation event received: ',
+    JSON.stringify(event)
+  );
 
   const token = event.authorizationToken.split(' ')[1];
 
@@ -41,10 +44,16 @@ export const verifyToken = async (
       complete: true,
     });
 
+    const payload = decoded?.payload as JwtPayload;
+
+    if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
+      throw new AuthError('Token provided has expired.');
+    }
+
     await fetchCognitoPublicKey(String(decoded?.header.kid));
 
     return {
-      principalId: String((decoded?.payload as JwtPayload).sub),
+      principalId: String(payload.sub),
       policyDocument: {
         Version: '2012-10-17',
         Statement: [
@@ -57,7 +66,10 @@ export const verifyToken = async (
       },
     };
   } catch (err) {
-    console.error('There was an error authenticating user: ', err);
+    console.error(
+      '[authService] There was an error authenticating user: ',
+      err
+    );
 
     throw new AuthError('Unauthorised');
   }

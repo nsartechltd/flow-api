@@ -3,7 +3,7 @@ import { PostConfirmationTriggerEvent } from 'aws-lambda';
 import { getPrismaClient } from '../libs/prisma-client';
 
 export const storeUser = async (event: PostConfirmationTriggerEvent) => {
-  console.log('Event received: ', JSON.stringify(event));
+  console.log('[userService] Event received: ', JSON.stringify(event));
 
   const prisma = getPrismaClient();
 
@@ -29,7 +29,10 @@ export const storeUser = async (event: PostConfirmationTriggerEvent) => {
       },
     });
   } catch (err) {
-    console.error('There was a problem storing the user in the database', err);
+    console.error(
+      '[userService] There was a problem storing the user in the database',
+      err
+    );
   }
 
   return event;

@@ -5,11 +5,14 @@ export const validator = (
   schema: ZodSchema
 ): Pick<MiddlewareObj, 'before' | 'onError'> => ({
   before: async (request) => {
-    console.log('Event received: ', JSON.stringify(request.event));
+    console.log(
+      '[validatorLib] Event received: ',
+      JSON.stringify(request.event)
+    );
     try {
       request.event = await schema.parseAsync(request.event);
     } catch (err) {
-      console.error('Error parsing payload', err);
+      console.error('[validatorLib] Error validating payload', err);
 
       return {
         statusCode: 400,
@@ -18,7 +21,7 @@ export const validator = (
     }
   },
   onError: (request) => {
-    console.log(request.error);
+    console.log('[validatorLib] Error validating payload', request.error);
 
     return {
       statusCode: 400,

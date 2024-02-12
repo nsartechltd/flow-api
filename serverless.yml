@@ -121,7 +121,7 @@ functions:
     handler: src/functions/contact.createContactHandler
     events:
       - http:
-          path: /contact
+          path: /contacts
           method: post
           cors: true
-          authorizer: flowAuthorizer
+          authorizer: flowAuthoriser

@@ -10,7 +10,7 @@ import { createContact } from '../services/contact';
 import { createContactSchema, validator } from '../libs/validation';
 
 const postContact = async (event: Event) => createContact(event);
-export const createHandler: Handler = middy<
+export const createContactHandler: Handler = middy<
   APIGatewayProxyEvent,
   APIGatewayProxyResult
 >()

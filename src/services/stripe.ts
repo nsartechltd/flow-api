@@ -43,7 +43,7 @@ export const handleStripeWebhook = async (
 export const handleCreateSession = async (
   event: Event
 ): Promise<APIGatewayProxyResult> => {
-  console.log('Event received: ', JSON.stringify(event));
+  console.log('[stripeService] Event received: ', JSON.stringify(event));
 
   const stripe = getStripeClient();
 
@@ -77,7 +77,7 @@ export const handleCreateSession = async (
     response.statusCode = session.lastResponse.statusCode;
     response.body = JSON.stringify(session);
   } catch (err) {
-    console.error('Error creating session on Stripe', err);
+    console.error('[stripeService] Error creating session on Stripe', err);
 
     response.statusCode = 500;
     response.body = JSON.stringify({
@@ -91,7 +91,7 @@ export const handleCreateSession = async (
 export const handleGetSession = async (
   event: Event
 ): Promise<APIGatewayProxyResult> => {
-  console.log('Event received: ', JSON.stringify(event));
+  console.log('[stripeService] Event received: ', JSON.stringify(event));
 
   const params: GetSessionPayload = event.pathParameters as GetSessionPayload;
 
@@ -106,7 +106,7 @@ export const handleGetSession = async (
   try {
     const session = await stripe.checkout.sessions.retrieve(params.sessionId);
 
-    console.log('Session found: ', JSON.stringify(session));
+    console.log('[stripeService] Session found: ', JSON.stringify(session));
 
     const responseBody = {
       status: session.status,
@@ -125,7 +125,7 @@ export const handleGetSession = async (
     response.statusCode = session.lastResponse.statusCode;
     response.body = JSON.stringify(responseBody);
   } catch (err) {
-    console.error('Error creating session on Stripe', err);
+    console.error('[stripeService] Error creating session on Stripe', err);
 
     response.statusCode = 500;
     response.body = JSON.stringify({

@@ -11,7 +11,7 @@ export type ContactPayload = z.infer<typeof createContactSchema>['body'];
 export const createContact = async (
   event: Event
 ): Promise<APIGatewayProxyResult> => {
-  console.log('Event received: ', JSON.stringify(event));
+  console.log('[contactService] Event received: ', JSON.stringify(event));
 
   const prisma = getPrismaClient();
 
@@ -27,12 +27,31 @@ export const createContact = async (
     const contact = await prisma.contact.create({
       data: {
         name: body.name,
+        website: body.website,
+        companyRegNumber: body.companyRegNumber,
+        ...(body.people
+          ? {
+              people: {
+                createMany: {
+                  data: body.people.map((person) => ({
+                    firstName: person.firstName,
+                    lastName: person.lastName,
+                    email: person.email,
+                    includeInEmails: person.includeInEmails,
+                  })),
+                },
+              },
+            }
+          : {}),
+      },
+      include: {
+        people: true,
       },
     });
 
     response.body = JSON.stringify(contact);
   } catch (err) {
-    console.error('Error creating contact', err);
+    console.error('[contactService] Error creating contact', err);
 
     response.statusCode = 500;
     response.body = JSON.stringify({

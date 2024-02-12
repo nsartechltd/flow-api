@@ -1,3 +1,8 @@
+import {
+  CognitoIdentityProviderClient,
+  InitiateAuthCommand,
+} from '@aws-sdk/client-cognito-identity-provider';
+
 import { getPrismaClient } from '../src/libs/prisma-client';
 
 module.exports = async function () {
@@ -9,10 +14,35 @@ module.exports = async function () {
   process.env.NODE_ENV = 'development';
 
   await seedDatabase();
+  await login();
+};
+
+const login = async () => {
+  console.log('Logging in...');
+
+  const client = new CognitoIdentityProviderClient({ region: 'eu-west-2' });
+  const command = new InitiateAuthCommand({
+    AuthFlow: 'USER_PASSWORD_AUTH',
+    AuthParameters: {
+      USERNAME: String(process.env.COGNITO_TEST_USER_USERNAME),
+      PASSWORD: String(process.env.COGNITO_TEST_USER_PASSWORD),
+    },
+    ClientId: process.env.COGNITO_CLIENT_ID,
+  });
+
+  try {
+    const response = await client.send(command);
+
+    process.env.LOGIN_TOKEN = String(response.AuthenticationResult?.IdToken);
+
+    console.log('Logged in.');
+  } catch (err) {
+    console.log('Login failed!', err);
+  }
 };
 
 const seedDatabase = async () => {
-  console.log(`Seeding database...`);
+  console.log('Seeding database...');
 
   const prisma = getPrismaClient();
 
@@ -30,9 +60,9 @@ const seedDatabase = async () => {
         organisationId: org.id,
       },
     });
-  } catch (err) {
-    console.error('An error occurred:', err);
-  }
 
-  console.log('Database seeded.');
+    console.log('Database seeded.');
+  } catch (err) {
+    console.error('Failed to seed database!', err);
+  }
 };

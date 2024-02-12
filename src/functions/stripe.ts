@@ -11,11 +11,11 @@ import {
   handleCreateSession,
   handleGetSession,
 } from '../services/stripe';
-import { validator } from '../libs/validation';
 import {
+  validator,
   createSessionSchema,
   getSessionSchema,
-} from '../libs/validation/schemas/stripe';
+} from '../libs/validation';
 import { stripeWebhookVerifier } from '../middleware/stripe';
 
 const stripeWebhook = async (event: Event) => handleStripeWebhook(event);

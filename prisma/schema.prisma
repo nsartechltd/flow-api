@@ -11,9 +11,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model ContactPeople {
+  id              String   @id @default(uuid())
+  firstName       String?
+  lastName        String?
+  email           String?
+  includeInEmails Boolean? @default(false)
+  contact         Contact? @relation(fields: [contactId], references: [id])
+  contactId       String?
+}
+
 model Contact {
-  id String  @id @default(uuid())
-  name String
+  id               String          @id @default(uuid())
+  name             String
+  people           ContactPeople[]
+  website          String?
+  companyRegNumber String?
 }
 
 model Organisation {

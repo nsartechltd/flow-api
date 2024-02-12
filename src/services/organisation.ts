@@ -13,7 +13,7 @@ export type OrganisationPayload = z.infer<
 export const createOrganisation = async (
   event: Event
 ): Promise<APIGatewayProxyResult> => {
-  console.log('Event received: ', JSON.stringify(event));
+  console.log('[organisationService] Event received: ', JSON.stringify(event));
 
   const prisma = getPrismaClient();
 
@@ -34,7 +34,7 @@ export const createOrganisation = async (
 
     response.body = JSON.stringify(organisation);
   } catch (err) {
-    console.error('Error creating organisation', err);
+    console.error('[organisationService] Error creating organisation', err);
 
     response.statusCode = 500;
     response.body = JSON.stringify({
