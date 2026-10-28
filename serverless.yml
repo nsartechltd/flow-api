@@ -3,7 +3,7 @@ service: flow-api
 plugins:
   - serverless-offline-ssm
   - serverless-plugin-typescript
-  - serverless-offline
+  - ./serverless-offline.cjs
   - serverless-domain-manager
 
 provider:
