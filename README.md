@@ -5,7 +5,7 @@
 To use this repo you will need the following:
 
 1. [nvm][nvm] - [see here](https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script) for installation details.
-2. [Node.js v20][nodejs]: If you have `nvm` installed you can run `nvm install 20` to install (this is recommended).
+2. [Node.js v24][nodejs]: If you have `nvm` installed you can run `nvm install 24` to install (this is recommended).
 3. [Docker][docker]: Install Docker for running the API locally
 
 ## Running locally
